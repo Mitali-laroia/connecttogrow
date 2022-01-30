@@ -4,7 +4,7 @@ const dotenv = require("dotenv");
 const morgan = require("morgan");
 const connectDB = require("./config/db");
 
-dotenv.config({path : ""});
+dotenv.config({path : "./config/config.env"});
 
 connectDB();
 
