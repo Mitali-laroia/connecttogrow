@@ -1,20 +1,22 @@
-import React, {createContext, useReducer} from "react";
+import React, { createContext, useReducer } from "react";
 import AppReducer from "./AppReducer";
 import axios from "axios";
-import App from "../App";
-import { init } from "../../../models/Transaction";
 
+// Initial state
 const initialState = {
     transactions: [],
     error: null,
     loading: true,
 };
 
+// Create context
 export const GlobalContext = createContext(initialState);
 
-export const GlobalProvider = ({ children}) => {
+// Provider component
+export const GlobalProvider = ({ children }) => {
     const [state, dispatch] = useReducer(AppReducer, initialState);
 
+    // Actions
     async function getTransactions() {
         try {
             const res = await axios.get("/api/v1/transactions");
@@ -23,7 +25,6 @@ export const GlobalProvider = ({ children}) => {
                 type: "GET_TRANSACTIONS",
                 payload: res.data.data,
             });
-
         } catch (err) {
             dispatch({
                 type: "TRANSACTION_ERROR",
@@ -40,7 +41,6 @@ export const GlobalProvider = ({ children}) => {
                 type: "DELETE_TRANSACTION",
                 payload: id,
             });
-
         } catch (err) {
             dispatch({
                 type: "TRANSACTION_ERROR",
@@ -58,7 +58,7 @@ export const GlobalProvider = ({ children}) => {
 
         try {
             const res = await axios.post(
-                "api/v1/transactions",
+                "/api/v1/transactions",
                 transaction,
                 config
             );
@@ -67,7 +67,6 @@ export const GlobalProvider = ({ children}) => {
                 type: "ADD_TRANSACTION",
                 payload: res.data.data,
             });
-
         } catch (err) {
             dispatch({
                 type: "TRANSACTION_ERROR",
@@ -78,7 +77,7 @@ export const GlobalProvider = ({ children}) => {
 
     return (
         <GlobalContext.Provider
-            value = {{
+            value={{
                 transactions: state.transactions,
                 error: state.error,
                 loading: state.loading,
@@ -86,8 +85,8 @@ export const GlobalProvider = ({ children}) => {
                 deleteTransaction,
                 addTransaction,
             }}
-            >
-                {children}
-            </GlobalContext.Provider>
-    )
-}
+        >
+            {children}
+        </GlobalContext.Provider>
+    );
+};
